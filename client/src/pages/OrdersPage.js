@@ -1,6 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CircularProgress } from '@mui/material';
+import { Container, Typography, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Box, CircularProgress, Chip } from '@mui/material';
 import API from '../services/api';
+
+const STATUS_MAP = {
+  pending:   { label: 'Chờ xác nhận', color: 'warning' },
+  paid:      { label: 'Đã thanh toán', color: 'info' },
+  shipped:   { label: 'Đang giao',    color: 'primary' },
+  completed: { label: 'Hoàn thành',   color: 'success' },
+  cancelled: { label: 'Đã huỷ',       color: 'error' },
+};
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -37,7 +45,13 @@ export default function OrdersPage() {
                 <TableRow key={order._id}>
                   <TableCell>{order._id.slice(-6).toUpperCase()}</TableCell>
                   <TableCell>{new Date(order.createdAt).toLocaleString()}</TableCell>
-                  <TableCell>{order.status}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={STATUS_MAP[order.status]?.label || order.status}
+                      color={STATUS_MAP[order.status]?.color || 'default'}
+                      size="small"
+                    />
+                  </TableCell>
                   <TableCell>{order.total.toLocaleString()} đ</TableCell>
                   <TableCell>
                     {order.items.map(item => (

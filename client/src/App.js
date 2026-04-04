@@ -17,6 +17,8 @@ import AdminOrdersPage from './pages/AdminOrdersPage';
 import AdminUsersPage from './pages/AdminUsersPage';
 import AdminCategoriesPage from './pages/AdminCategoriesPage';
 import AdminDiscountCodesPage from './pages/AdminDiscountCodesPage';
+import AdminPublishersPage from './pages/AdminPublishersPage';
+import AdminBannersPage from './pages/AdminBannersPage';
 
 function App() {
   return (
@@ -37,6 +39,8 @@ function App() {
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/categories" element={<AdminCategoriesPage />} />
           <Route path="/admin/discountcodes" element={<AdminDiscountCodesPage />} />
+          <Route path="/admin/publishers" element={<AdminPublishersPage />} />
+          <Route path="/admin/banners" element={<AdminBannersPage />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Box>

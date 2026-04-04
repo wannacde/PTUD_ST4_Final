@@ -22,6 +22,10 @@ app.use('/api/reviews', require('./routes/reviews'));
 app.use('/api/orders', require('./routes/orders'));
 app.use('/api/cart', require('./routes/cart'));
 app.use('/api/discountcodes', require('./routes/discountcodes'));
+app.use('/api/publishers', require('./routes/publishers'));
+app.use('/api/address', require('./routes/address'));
+app.use('/api/notifications', require('./routes/notifications'));
+app.use('/api/banners', require('./routes/banners'));
 
 // Health check
 app.get('/api/health', (req, res) => {

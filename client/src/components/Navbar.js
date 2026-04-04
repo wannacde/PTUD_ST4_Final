@@ -99,6 +99,8 @@ export default function Navbar() {
               <MenuItem onClick={() => { navigate('/admin/orders'); setAdminAnchor(null); }}>Quản lý Đơn hàng</MenuItem>
               <MenuItem onClick={() => { navigate('/admin/users'); setAdminAnchor(null); }}>Quản lý Người dùng</MenuItem>
               <MenuItem onClick={() => { navigate('/admin/discountcodes'); setAdminAnchor(null); }}>Quản lý Mã giảm giá</MenuItem>
+              <MenuItem onClick={() => { navigate('/admin/publishers'); setAdminAnchor(null); }}>Quản lý Nhà xuất bản</MenuItem>
+              <MenuItem onClick={() => { navigate('/admin/banners'); setAdminAnchor(null); }}>Quản lý Banner</MenuItem>
             </Menu>
           </>
         )}

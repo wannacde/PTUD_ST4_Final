@@ -51,11 +51,11 @@ export default function AdminOrdersPage() {
                     onChange={e => handleStatusChange(order._id, e.target.value)}
                     size="small"
                   >
-                    <MenuItem value="pending">pending</MenuItem>
-                    <MenuItem value="paid">paid</MenuItem>
-                    <MenuItem value="shipped">shipped</MenuItem>
-                    <MenuItem value="completed">completed</MenuItem>
-                    <MenuItem value="cancelled">cancelled</MenuItem>
+                    <MenuItem value="pending">Chờ xác nhận</MenuItem>
+                    <MenuItem value="paid">Đã thanh toán</MenuItem>
+                    <MenuItem value="shipped">Đang giao</MenuItem>
+                    <MenuItem value="completed">Hoàn thành</MenuItem>
+                    <MenuItem value="cancelled">Đã huỷ</MenuItem>
                   </Select>
                 </TableCell>
                 <TableCell>{order.total.toLocaleString()} đ</TableCell>
