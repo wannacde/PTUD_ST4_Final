@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 import API from '../services/api';
 
 export default function Navbar() {
@@ -12,6 +13,7 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [anchorEl, setAnchorEl] = useState(null);
   const [adminAnchor, setAdminAnchor] = useState(null);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -21,13 +23,39 @@ export default function Navbar() {
         .catch(() => {
           localStorage.removeItem('token');
           setUser(null);
+          setUnreadCount(0);
         });
+    } else {
+      setUnreadCount(0);
     }
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!user) return undefined;
+
+    const fetchUnreadNotifications = () => {
+      API.get('/notifications')
+        .then((res) => {
+          const unread = (res.data || []).filter((item) => !item.isRead).length;
+          setUnreadCount(unread);
+        })
+        .catch(() => setUnreadCount(0));
+    };
+
+    fetchUnreadNotifications();
+
+    const handleNotificationsUpdated = () => fetchUnreadNotifications();
+    window.addEventListener('notifications-updated', handleNotificationsUpdated);
+
+    return () => {
+      window.removeEventListener('notifications-updated', handleNotificationsUpdated);
+    };
+  }, [user, location.pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     setUser(null);
+    setUnreadCount(0);
     setAnchorEl(null);
     navigate('/login');
   };
@@ -65,6 +93,11 @@ export default function Navbar() {
             </IconButton>
             <IconButton color="inherit" onClick={() => navigate('/wishlist')} sx={{ ml: 0.5 }}>
               <FavoriteIcon />
+            </IconButton>
+            <IconButton color="inherit" onClick={() => navigate('/profile')} sx={{ ml: 0.5 }}>
+              <Badge color="error" badgeContent={unreadCount} max={99}>
+                <NotificationsIcon />
+              </Badge>
             </IconButton>
             <Button
               color="inherit"

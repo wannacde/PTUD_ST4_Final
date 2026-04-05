@@ -46,7 +46,7 @@
 # Cài đặt tất cả dependencies
 npm run install-all
 
-# Seed dữ liệu mẫu (12 sách, 6 thể loại, 3 mã giảm giá, 2 tài khoản)
+# Seed dữ liệu mẫu (12 sách, 6 thể loại, 3 nhà xuất bản, 3 mã giảm giá, 2 tài khoản)
 node seed.js
 
 # Chạy cả backend (port 5000) + frontend (port 3000)
@@ -61,11 +61,12 @@ npm run dev
 
 | # | Chức năng | URL cụ thể | Thao tác |
 |---|-----------|------------|----------|
-| 1 | Trang chủ — danh sách sách | `http://localhost:3000/` | Mở trình duyệt, xem danh sách sách |
+| 1 | Trang chủ — danh sách sách + banner | `http://localhost:3000/` | Mở trình duyệt, xem banner trang chủ, danh sách sách và các bộ lọc |
 | 2 | Tìm kiếm sách | `http://localhost:3000/` | Nhập tên / tác giả vào ô tìm kiếm ở hero section |
-| 3 | Xem chi tiết sách | `http://localhost:3000/books/<bookId>` | Click "Xem chi tiết" trên bất kỳ sách nào |
-| 4 | Đăng ký tài khoản | `http://localhost:3000/register` | Điền username, email, password → Submit |
-| 5 | Đăng nhập | `http://localhost:3000/login` | Nhập email + password → Đăng nhập |
+| 3 | Lọc theo thể loại / nhà xuất bản | `http://localhost:3000/` | Chọn dropdown thể loại hoặc nhà xuất bản ở trang chủ |
+| 4 | Xem chi tiết sách | `http://localhost:3000/books/<bookId>` | Click "Xem chi tiết" trên bất kỳ sách nào |
+| 5 | Đăng ký tài khoản | `http://localhost:3000/register` | Điền username, email, password → Submit |
+| 6 | Đăng nhập | `http://localhost:3000/login` | Nhập email + password → Đăng nhập |
 
 ### 1.2. Chức năng User (Đăng nhập trước: `http://localhost:3000/login` — nguyenvan@gmail.com / user123)
 
@@ -85,7 +86,8 @@ npm run dev
 | 12 | Viết đánh giá sách | `http://localhost:3000/books/<bookId>` | Kéo xuống phần Reviews → điền rating + comment → Submit |
 | 13 | Xem & cập nhật thông tin cá nhân | `http://localhost:3000/profile` | Click avatar trên navbar → "Thông tin cá nhân" |
 | 14 | Quản lý địa chỉ giao hàng | `http://localhost:3000/profile` | Kéo xuống phần "Địa chỉ giao hàng" → thêm/sửa/xóa |
-| 15 | Xem thông báo | `http://localhost:3000/profile` | Kéo xuống phần "Thông báo" |
+| 15 | Xem thông báo | `http://localhost:3000/profile` | Kéo xuống phần "Thông báo" để xem thông báo đặt hàng / cập nhật trạng thái đơn |
+| 16 | Xem badge thông báo chưa đọc | `http://localhost:3000/` | Quan sát icon chuông trên navbar sau khi có thông báo mới |
 
 ### 1.3. Chức năng Admin (Đăng nhập trước: `http://localhost:3000/login` — admin@bookstore.com / admin123)
 
@@ -98,7 +100,7 @@ npm run dev
 | 5 | Quản lý Thể loại | `http://localhost:3000/admin/categories` | Navbar → "Quản lý" → "Quản lý Thể loại" |
 | 6 | Thêm / sửa / xóa thể loại | `http://localhost:3000/admin/categories` | Dùng các nút trong bảng |
 | 7 | Quản lý Đơn hàng | `http://localhost:3000/admin/orders` | Navbar → "Quản lý" → "Quản lý Đơn hàng" |
-| 8 | Cập nhật trạng thái đơn | `http://localhost:3000/admin/orders` | Chọn dropdown trạng thái ở từng đơn |
+| 8 | Cập nhật trạng thái đơn | `http://localhost:3000/admin/orders` | Chọn dropdown trạng thái ở từng đơn. Khi chuyển sang `Đã thanh toán`, hệ thống tự động trừ tồn kho sách |
 | 9 | Quản lý Người dùng | `http://localhost:3000/admin/users` | Navbar → "Quản lý" → "Quản lý Người dùng" |
 | 10 | Đổi role / xóa user | `http://localhost:3000/admin/users` | Dùng các nút trong bảng |
 | 11 | Quản lý Mã giảm giá | `http://localhost:3000/admin/discountcodes` | Navbar → "Quản lý" → "Quản lý Mã giảm giá" |
@@ -134,8 +136,8 @@ npm run dev
 |---|--------|------------|------|------|-------|
 | 1 | GET | `http://localhost:5000/api/books` | — | Không | Lấy danh sách sách |
 | 2 | GET | `http://localhost:5000/api/books/:id` | — | Không | Xem chi tiết sách |
-| 3 | POST | `http://localhost:5000/api/books` | form-data: title, author, price, description, category, stock, image (file) | Admin | Thêm sách mới |
-| 4 | PUT | `http://localhost:5000/api/books/:id` | form-data: title, author, price, ... image (file) | Admin | Cập nhật sách |
+| 3 | POST | `http://localhost:5000/api/books` | form-data: title, author, price, description, category, publisher, stock, image (file) | Admin | Thêm sách mới |
+| 4 | PUT | `http://localhost:5000/api/books/:id` | form-data: title, author, price, category, publisher, stock, description, image (file) | Admin | Cập nhật sách |
 | 5 | DELETE | `http://localhost:5000/api/books/:id` | — | Admin | Xóa sách |
 
 ### 2.3. Categories (Thể loại)
@@ -161,7 +163,7 @@ npm run dev
 
 | # | Method | URL đầy đủ | Body | Auth | Mô tả |
 |---|--------|------------|------|------|-------|
-| 1 | POST | `http://localhost:5000/api/orders` | `{ "items":[{"book":"<bookId>","quantity":1}], "discountCode":"WELCOME10" }` | User | Đặt hàng |
+| 1 | POST | `http://localhost:5000/api/orders` | `{ "discountCode":"WELCOME10" }` | User | Đặt hàng từ giỏ hàng hiện tại |
 | 2 | GET | `http://localhost:5000/api/orders` | — | User | Xem đơn hàng của tôi |
 | 3 | GET | `http://localhost:5000/api/orders/all` | — | Admin | Xem tất cả đơn hàng |
 | 4 | PUT | `http://localhost:5000/api/orders/:id/status` | `{ "status":"shipped" }` | Admin | Cập nhật trạng thái đơn |
@@ -206,15 +208,15 @@ npm run dev
 | # | Method | URL đầy đủ | Body | Auth | Mô tả |
 |---|--------|------------|------|------|-------|
 | 1 | GET | `http://localhost:5000/api/address` | — | User | Xem danh sách địa chỉ của tôi |
-| 2 | POST | `http://localhost:5000/api/address` | `{ "fullName":"Nguyễn Văn A", "phone":"0901234567", "address":"123 Lê Lợi", "city":"HCM", "district":"Q1", "isDefault":true }` | User | Thêm địa chỉ mới |
-| 3 | PUT | `http://localhost:5000/api/address/:id` | `{ "phone":"0909999999", "isDefault":true }` | User | Cập nhật địa chỉ |
+| 2 | POST | `http://localhost:5000/api/address` | `{ "fullName":"Nguyễn Văn A", "phone":"0901234567", "address":"123 Lê Lợi", "city":"Thành phố Hồ Chí Minh", "district":"Quận 1", "ward":"Phường Bến Nghé", "isDefault":true }` | User | Thêm địa chỉ mới |
+| 3 | PUT | `http://localhost:5000/api/address/:id` | `{ "phone":"0909999999", "ward":"Phường Bến Nghé", "isDefault":true }` | User | Cập nhật địa chỉ |
 | 4 | DELETE | `http://localhost:5000/api/address/:id` | — | User | Xóa địa chỉ |
 
 ### 2.11. Notifications (Thông báo)
 
 | # | Method | URL đầy đủ | Body | Auth | Mô tả |
 |---|--------|------------|------|------|-------|
-| 1 | GET | `http://localhost:5000/api/notifications` | — | User | Xem thông báo của tôi |
+| 1 | GET | `http://localhost:5000/api/notifications` | — | User | Xem thông báo của tôi (bao gồm đặt hàng thành công, cập nhật trạng thái đơn, hoặc thông báo admin gửi) |
 | 2 | PUT | `http://localhost:5000/api/notifications/read-all` | — | User | Đánh dấu tất cả đã đọc |
 | 3 | PUT | `http://localhost:5000/api/notifications/:id/read` | — | User | Đánh dấu 1 thông báo đã đọc |
 | 4 | DELETE | `http://localhost:5000/api/notifications/:id` | — | User | Xóa thông báo |
@@ -232,11 +234,186 @@ npm run dev
 
 ---
 
+## PHỤ LỤC: API CHÍNH ĐỂ TEST POSTMAN
+
+> Mục này chỉ tổng hợp **các API chính** của hệ thống để dễ chụp màn hình minh họa khi nộp báo cáo.  
+> Nếu cần đầy đủ toàn bộ API, xem lại **PHẦN 2** phía trên.
+
+### 1. Đăng nhập lấy token
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/auth/login`
+- **Body JSON:**
+
+```json
+{
+	"email": "admin@bookstore.com",
+	"password": "admin123"
+}
+```
+
+- **Mục đích:** Đăng nhập và lấy token để test các API cần xác thực.
+
+### 2. Lấy thông tin cá nhân
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/auth/me`
+- **Header:** `Authorization: Bearer <token>`
+- **Body:** Không có
+- **Mục đích:** Kiểm tra token hợp lệ và lấy thông tin user hiện tại.
+
+### 3. Lấy danh sách sách
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/books`
+- **Body:** Không có
+- **Mục đích:** API công khai để hiển thị danh sách sách ở trang chủ.
+
+### 4. Thêm sách mới
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/books`
+- **Header:** `Authorization: Bearer <admin_token>`
+- **Body:** `form-data`
+
+```text
+title: Clean Architecture
+author: Robert C. Martin
+price: 210000
+description: Sach ve kien truc phan mem
+category: Cong nghe
+publisher: NXB Tong Hop
+stock: 12
+image: (file)
+```
+
+- **Mục đích:** Minh họa API thêm sách có dùng Category + Publisher.
+
+### 5. Lấy danh sách thể loại
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/categories`
+- **Body:** Không có
+- **Mục đích:** Lấy dữ liệu thể loại để quản lý admin và lọc sách ở Home.
+
+### 6. Lấy danh sách nhà xuất bản
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/publishers`
+- **Body:** Không có
+- **Mục đích:** Lấy dữ liệu nhà xuất bản để quản lý admin và lọc sách ở Home.
+
+### 7. Thêm vào giỏ hàng
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/cart`
+- **Header:** `Authorization: Bearer <user_token>`
+- **Body JSON:**
+
+```json
+{
+	"bookId": "<bookId>",
+	"quantity": 2
+}
+```
+
+- **Mục đích:** Thêm sách vào giỏ hàng.
+
+### 8. Áp dụng mã giảm giá
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/discountcodes/apply`
+- **Header:** `Authorization: Bearer <user_token>`
+- **Body JSON:**
+
+```json
+{
+	"code": "WELCOME10"
+}
+```
+
+- **Mục đích:** Kiểm tra mã giảm giá trước khi đặt hàng.
+
+### 9. Đặt hàng
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/orders`
+- **Header:** `Authorization: Bearer <user_token>`
+- **Body JSON:**
+
+```json
+{
+	"discountCode": "WELCOME10"
+}
+```
+
+- **Mục đích:** Tạo đơn hàng từ giỏ hàng hiện tại.
+
+### 10. Lấy đơn hàng của tôi
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/orders`
+- **Header:** `Authorization: Bearer <user_token>`
+- **Body:** Không có
+- **Mục đích:** Xem lịch sử đơn hàng của user.
+
+### 11. Xem tất cả đơn hàng
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/orders/all`
+- **Header:** `Authorization: Bearer <admin_token>`
+- **Body:** Không có
+- **Mục đích:** Minh họa API quản trị đơn hàng.
+
+### 12. Gửi thông báo cho user
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/notifications/send`
+- **Header:** `Authorization: Bearer <admin_token>`
+- **Body JSON:**
+
+```json
+{
+	"userId": "<userId>",
+	"title": "Thong bao moi",
+	"message": "Don hang da duoc xac nhan",
+	"type": "order"
+}
+```
+
+- **Mục đích:** Minh họa model Notification trong thực tế. Ngoài gửi thủ công từ admin, hệ thống hiện cũng tự tạo thông báo khi user đặt hàng và khi admin cập nhật trạng thái đơn.
+
+### 13. Lấy banner đang hoạt động
+
+- **Method:** `GET`
+- **URL đầy đủ:** `http://localhost:5000/api/banners`
+- **Body:** Không có
+- **Mục đích:** Lấy banner hiển thị ở trang chủ.
+
+### 14. Tạo banner mới
+
+- **Method:** `POST`
+- **URL đầy đủ:** `http://localhost:5000/api/banners`
+- **Header:** `Authorization: Bearer <admin_token>`
+- **Body JSON:**
+
+```json
+{
+	"title": "Khuyen mai he",
+	"imageUrl": "https://example.com/banner.jpg",
+	"link": "/books",
+	"isActive": true,
+	"order": 1
+}
+```
+
+- **Mục đích:** Minh họa API quản trị banner trang chủ.
+
 ## PHẦN 3: TRÌNH TỰ DEMO GỢI Ý
 
 ### Bước 1 — Giới thiệu hệ thống
 - Trình bày kiến trúc: MERN Stack (MongoDB, Express, React, Node.js)
-- Mở `http://localhost:3000/` → giới thiệu giao diện trang chủ, thanh điều hướng
+- Mở `http://localhost:3000/` → giới thiệu giao diện trang chủ, banner, thanh điều hướng, bộ lọc thể loại / nhà xuất bản
 
 ### Bước 2 — Demo chức năng User (Frontend)
 
@@ -254,6 +431,7 @@ npm run dev
 | 10 | Xem lịch sử đơn hàng | `http://localhost:3000/orders` |
 | 11 | Xem Wishlist | `http://localhost:3000/wishlist` |
 | 12 | Cập nhật thông tin cá nhân & địa chỉ | `http://localhost:3000/profile` |
+| 13 | Xem badge thông báo và mục thông báo | `http://localhost:3000/profile` |
 
 ### Bước 3 — Demo chức năng Admin (Frontend)
 
@@ -270,12 +448,13 @@ npm run dev
 
 ### Bước 4 — Demo API bằng Postman
 1. `POST http://localhost:5000/api/auth/login` → lấy token
-2. Demo 2–3 API tiêu biểu: `POST /api/orders`, `GET /api/books`, `POST /api/discountcodes/validate`
-3. Cho thấy validation: gửi thiếu field → nhận lỗi 400
-4. Cho thấy phân quyền: user gọi `DELETE /api/books/:id` → nhận lỗi 403
+2. Demo 2–3 API tiêu biểu: `POST /api/orders`, `GET /api/books`, `POST /api/discountcodes/apply`
+3. Demo thông báo tự động: sau khi đặt hàng hoặc đổi trạng thái đơn, gọi `GET /api/notifications`
+4. Cho thấy validation: gửi thiếu field → nhận lỗi 400
+5. Cho thấy phân quyền: user gọi `DELETE /api/books/:id` → nhận lỗi 403
 
 ### Bước 5 — Kết luận
-- Tóm tắt các chức năng đã hoàn thành (12 model, 15 màn hình frontend)
+- Tóm tắt các chức năng đã hoàn thành (12 model, 16+ luồng giao diện frontend bao gồm banner, lọc sách, badge thông báo)
 - Hướng phát triển: thanh toán online, gợi ý sách, phân trang, ...
 
 ---

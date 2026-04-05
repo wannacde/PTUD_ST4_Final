@@ -5,9 +5,9 @@ exports.createBook = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
   try {
-    const { title, author, description, price, category, stock } = req.body;
+    const { title, author, description, price, category, publisher, stock } = req.body;
     const image = req.file ? req.file.filename : undefined;
-    const book = new Book({ title, author, description, price, category, stock, image });
+    const book = new Book({ title, author, description, price, category, publisher, stock, image });
     await book.save();
     res.status(201).json(book);
   } catch (err) {

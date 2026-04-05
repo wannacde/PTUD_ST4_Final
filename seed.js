@@ -5,6 +5,7 @@ require('dotenv').config();
 const User = require('./models/User');
 const Category = require('./models/Category');
 const Book = require('./models/Book');
+const Publisher = require('./models/Publisher');
 const DiscountCode = require('./models/DiscountCode');
 
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/bookstore';
@@ -17,6 +18,7 @@ async function seed() {
   await User.deleteMany({});
   await Category.deleteMany({});
   await Book.deleteMany({});
+  await Publisher.deleteMany({});
   await DiscountCode.deleteMany({});
   console.log('Cleared old data');
 
@@ -49,6 +51,32 @@ async function seed() {
   ]);
   console.log(`Created ${cats.length} categories`);
 
+  // --- Publishers ---
+  const publishers = await Publisher.insertMany([
+    {
+      name: 'NXB Kim Dong',
+      address: 'Ha Noi',
+      phone: '02411112222',
+      email: 'contact@kimdong.vn',
+      description: 'Nha xuat ban cho thieu nhi'
+    },
+    {
+      name: 'NXB Tre',
+      address: 'TP HCM',
+      phone: '02833334444',
+      email: 'contact@nxbtre.vn',
+      description: 'Nha xuat ban tong hop'
+    },
+    {
+      name: 'NXB Tong Hop',
+      address: 'TP HCM',
+      phone: '02855556666',
+      email: 'hello@tonghop.vn',
+      description: 'Nha xuat ban da linh vuc'
+    }
+  ]);
+  console.log(`Created ${publishers.length} publishers`);
+
   // --- Books ---
   const books = await Book.insertMany([
     {
@@ -57,6 +85,7 @@ async function seed() {
       description: 'Câu chuyện phiêu lưu nổi tiếng của chú Dế Mèn qua nhiều vùng đất, gặp gỡ nhiều loài vật khác nhau.',
       price: 65000,
       category: 'Văn học',
+      publisher: 'NXB Kim Dong',
       stock: 50
     },
     {
@@ -65,6 +94,7 @@ async function seed() {
       description: 'Kiệt tác văn học Việt Nam, kể về cuộc đời đầy sóng gió của nàng Kiều.',
       price: 85000,
       category: 'Văn học',
+      publisher: 'NXB Tong Hop',
       stock: 30
     },
     {
@@ -73,6 +103,7 @@ async function seed() {
       description: 'Tiểu thuyết nổi tiếng thế giới về hành trình theo đuổi giấc mơ của chàng chăn cừu Santiago.',
       price: 79000,
       category: 'Văn học',
+      publisher: 'NXB Tre',
       stock: 40
     },
     {
@@ -81,6 +112,7 @@ async function seed() {
       description: 'Cuốn sách best-seller kể lại lịch sử phát triển của loài người từ thời tiền sử đến hiện đại.',
       price: 189000,
       category: 'Lịch sử',
+      publisher: 'NXB Tre',
       stock: 25
     },
     {
@@ -89,6 +121,7 @@ async function seed() {
       description: 'Cuốn sách kinh điển về nghệ thuật giao tiếp và ứng xử trong cuộc sống.',
       price: 76000,
       category: 'Kinh tế',
+      publisher: 'NXB Tong Hop',
       stock: 60
     },
     {
@@ -97,6 +130,7 @@ async function seed() {
       description: 'Giải thích các khái niệm vật lý phức tạp như Big Bang, lỗ đen một cách dễ hiểu.',
       price: 120000,
       category: 'Khoa học',
+      publisher: 'NXB Tre',
       stock: 20
     },
     {
@@ -105,6 +139,7 @@ async function seed() {
       description: 'Hướng dẫn viết code sạch, dễ bảo trì - cuốn sách gối đầu giường của lập trình viên.',
       price: 350000,
       category: 'Công nghệ',
+      publisher: 'NXB Tong Hop',
       stock: 15
     },
     {
@@ -113,6 +148,7 @@ async function seed() {
       description: 'Khám phá hai hệ thống tư duy chi phối cách chúng ta đưa ra quyết định.',
       price: 199000,
       category: 'Khoa học',
+      publisher: 'NXB Tre',
       stock: 35
     },
     {
@@ -121,6 +157,7 @@ async function seed() {
       description: 'Câu chuyện cảm động về nghị lực vươn lên của những đứa trẻ nghèo ở Indonesia.',
       price: 89000,
       category: 'Văn học',
+      publisher: 'NXB Kim Dong',
       stock: 28
     },
     {
@@ -129,6 +166,7 @@ async function seed() {
       description: 'Câu chuyện cổ tích dành cho người lớn về tình bạn, tình yêu và ý nghĩa cuộc sống.',
       price: 55000,
       category: 'Thiếu nhi',
+      publisher: 'NXB Kim Dong',
       stock: 45
     },
     {
@@ -137,6 +175,7 @@ async function seed() {
       description: 'Nhập môn lập trình Python từ cơ bản đến nâng cao với các dự án thực tế.',
       price: 280000,
       category: 'Công nghệ',
+      publisher: 'NXB Tong Hop',
       stock: 22
     },
     {
@@ -145,6 +184,7 @@ async function seed() {
       description: 'Cuốn sách kinh điển về tư duy làm giàu và thành công trong cuộc sống.',
       price: 95000,
       category: 'Kinh tế',
+      publisher: 'NXB Tre',
       stock: 38
     },
   ]);

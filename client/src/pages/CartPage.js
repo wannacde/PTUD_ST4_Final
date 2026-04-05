@@ -54,6 +54,7 @@ export default function CartPage() {
     setMessage({ text: '', type: 'success' });
     API.post('/orders', discountInfo ? { discountCode: discountInfo.code } : {})
       .then(() => {
+        window.dispatchEvent(new Event('notifications-updated'));
         setMessage({ text: 'Đặt hàng thành công!', type: 'success' });
         setDiscountCode('');
         setDiscountInfo(null);

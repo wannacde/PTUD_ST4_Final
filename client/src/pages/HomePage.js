@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Grid, Card, CardMedia, CardContent, Typography, CardActions,
-  Button, CircularProgress, Box, TextField, InputAdornment, Paper, IconButton
+  Button, CircularProgress, Box, TextField, InputAdornment, Paper, IconButton,
+  Stack, FormControl, InputLabel, Select, MenuItem, Chip
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
@@ -13,9 +14,13 @@ import API from '../services/api';
 export default function HomePage() {
   const [books, setBooks] = useState([]);
   const [banners, setBanners] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [publishers, setPublishers] = useState([]);
   const [bannerIndex, setBannerIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState('');
+  const [publisherFilter, setPublisherFilter] = useState('');
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,6 +32,14 @@ export default function HomePage() {
     API.get('/banners')
       .then(res => setBanners(res.data || []))
       .catch(() => setBanners([]));
+
+    API.get('/categories')
+      .then(res => setCategories(res.data || []))
+      .catch(() => setCategories([]));
+
+    API.get('/publishers')
+      .then(res => setPublishers(res.data || []))
+      .catch(() => setPublishers([]));
   }, []);
 
   useEffect(() => {
@@ -40,8 +53,10 @@ export default function HomePage() {
   }, [banners]);
 
   const filtered = books.filter(b =>
-    b.title?.toLowerCase().includes(search.toLowerCase()) ||
-    b.author?.toLowerCase().includes(search.toLowerCase())
+    (b.title?.toLowerCase().includes(search.toLowerCase()) ||
+      b.author?.toLowerCase().includes(search.toLowerCase())) &&
+    (!categoryFilter || b.category === categoryFilter) &&
+    (!publisherFilter || b.publisher === publisherFilter)
   );
 
   const currentBanner = banners[bannerIndex] || null;
@@ -165,9 +180,58 @@ export default function HomePage() {
       )}
 
       <Container sx={{ py: 4 }}>
-        <Typography variant="h5" fontWeight="bold" gutterBottom>
+        <Stack
+          direction={{ xs: 'column', md: 'row' }}
+          spacing={2}
+          alignItems={{ xs: 'stretch', md: 'center' }}
+          justifyContent="space-between"
+          sx={{ mb: 2 }}
+        >
+          <Typography variant="h5" fontWeight="bold" gutterBottom>
           Danh sách sách {filtered.length > 0 && `(${filtered.length})`}
-        </Typography>
+          </Typography>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={1.5}>
+            <FormControl size="small" sx={{ minWidth: 180 }}>
+              <InputLabel id="home-category-filter">Thể loại</InputLabel>
+              <Select
+                labelId="home-category-filter"
+                label="Thể loại"
+                value={categoryFilter}
+                onChange={(e) => setCategoryFilter(e.target.value)}
+              >
+                <MenuItem value="">Tất cả thể loại</MenuItem>
+                {categories.map((c) => (
+                  <MenuItem key={c._id} value={c.name}>{c.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl size="small" sx={{ minWidth: 200 }}>
+              <InputLabel id="home-publisher-filter">Nhà xuất bản</InputLabel>
+              <Select
+                labelId="home-publisher-filter"
+                label="Nhà xuất bản"
+                value={publisherFilter}
+                onChange={(e) => setPublisherFilter(e.target.value)}
+              >
+                <MenuItem value="">Tất cả nhà xuất bản</MenuItem>
+                {publishers.map((p) => (
+                  <MenuItem key={p._id} value={p.name}>{p.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            {(categoryFilter || publisherFilter) && (
+              <Button
+                variant="text"
+                onClick={() => {
+                  setCategoryFilter('');
+                  setPublisherFilter('');
+                }}
+              >
+                Xóa lọc
+              </Button>
+            )}
+          </Stack>
+        </Stack>
 
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
@@ -212,6 +276,10 @@ export default function HomePage() {
                   <CardContent sx={{ flexGrow: 1 }}>
                     <Typography variant="h6" noWrap>{book.title}</Typography>
                     <Typography variant="body2" color="text.secondary" gutterBottom>{book.author}</Typography>
+                    <Stack direction="row" spacing={0.8} sx={{ mb: 1.2, flexWrap: 'wrap' }}>
+                      {book.category && <Chip size="small" label={book.category} variant="outlined" />}
+                      {book.publisher && <Chip size="small" label={book.publisher} color="secondary" variant="outlined" />}
+                    </Stack>
                     <Typography variant="h6" color="primary" fontWeight="bold">
                       {book.price?.toLocaleString()} đ
                     </Typography>

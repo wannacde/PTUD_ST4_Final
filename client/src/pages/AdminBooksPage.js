@@ -1,5 +1,28 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Box, Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField, CircularProgress } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  TextField,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem
+} from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import API from '../services/api';
@@ -7,9 +30,11 @@ import API from '../services/api';
 export default function AdminBooksPage() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categories, setCategories] = useState([]);
+  const [publishers, setPublishers] = useState([]);
   const [open, setOpen] = useState(false);
   const [editBook, setEditBook] = useState(null);
-  const [form, setForm] = useState({ title: '', author: '', price: '', description: '', category: '', stock: '', image: null });
+  const [form, setForm] = useState({ title: '', author: '', price: '', description: '', category: '', publisher: '', stock: '', image: null });
 
   const fetchBooks = () => {
     setLoading(true);
@@ -18,9 +43,26 @@ export default function AdminBooksPage() {
 
   useEffect(() => { fetchBooks(); }, []);
 
+  useEffect(() => {
+    API.get('/categories').then(res => setCategories(res.data || [])).catch(() => setCategories([]));
+    API.get('/publishers').then(res => setPublishers(res.data || [])).catch(() => setPublishers([]));
+  }, []);
+
   const handleOpen = (book = null) => {
     setEditBook(book);
-    setForm(book ? { ...book, image: null } : { title: '', author: '', price: '', description: '', category: '', stock: '', image: null });
+    setForm(book
+      ? {
+        title: book.title || '',
+        author: book.author || '',
+        price: book.price || '',
+        description: book.description || '',
+        category: book.category || '',
+        publisher: book.publisher || '',
+        stock: book.stock || '',
+        image: null
+      }
+      : { title: '', author: '', price: '', description: '', category: '', publisher: '', stock: '', image: null }
+    );
     setOpen(true);
   };
   const handleClose = () => setOpen(false);
@@ -61,6 +103,7 @@ export default function AdminBooksPage() {
               <TableCell>Tác giả</TableCell>
               <TableCell>Giá</TableCell>
               <TableCell>Thể loại</TableCell>
+              <TableCell>NXB</TableCell>
               <TableCell>Số lượng</TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -72,6 +115,7 @@ export default function AdminBooksPage() {
                 <TableCell>{book.author}</TableCell>
                 <TableCell>{book.price.toLocaleString()} đ</TableCell>
                 <TableCell>{book.category}</TableCell>
+                <TableCell>{book.publisher || '—'}</TableCell>
                 <TableCell>{book.stock}</TableCell>
                 <TableCell>
                   <IconButton color="primary" onClick={() => handleOpen(book)}><EditIcon /></IconButton>
@@ -89,7 +133,36 @@ export default function AdminBooksPage() {
             <TextField margin="dense" label="Tiêu đề" name="title" value={form.title} onChange={handleChange} fullWidth required />
             <TextField margin="dense" label="Tác giả" name="author" value={form.author} onChange={handleChange} fullWidth required />
             <TextField margin="dense" label="Giá" name="price" value={form.price} onChange={handleChange} fullWidth required type="number" />
-            <TextField margin="dense" label="Thể loại" name="category" value={form.category} onChange={handleChange} fullWidth />
+            <FormControl margin="dense" fullWidth>
+              <InputLabel id="book-category-label">Thể loại</InputLabel>
+              <Select
+                labelId="book-category-label"
+                label="Thể loại"
+                name="category"
+                value={form.category}
+                onChange={handleChange}
+              >
+                <MenuItem value=""><em>Không chọn</em></MenuItem>
+                {categories.map((c) => (
+                  <MenuItem key={c._id} value={c.name}>{c.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+            <FormControl margin="dense" fullWidth>
+              <InputLabel id="book-publisher-label">Nhà xuất bản</InputLabel>
+              <Select
+                labelId="book-publisher-label"
+                label="Nhà xuất bản"
+                name="publisher"
+                value={form.publisher}
+                onChange={handleChange}
+              >
+                <MenuItem value=""><em>Không chọn</em></MenuItem>
+                {publishers.map((p) => (
+                  <MenuItem key={p._id} value={p.name}>{p.name}</MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField margin="dense" label="Số lượng" name="stock" value={form.stock} onChange={handleChange} fullWidth type="number" />
             <TextField margin="dense" label="Mô tả" name="description" value={form.description} onChange={handleChange} fullWidth multiline rows={2} />
             <Button variant="contained" component="label" sx={{ mt: 1 }}>

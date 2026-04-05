@@ -6,6 +6,7 @@ const bookSchema = new mongoose.Schema({
   description: { type: String },
   price: { type: Number, required: true },
   category: { type: String },
+  publisher: { type: String },
   image: { type: String },
   stock: { type: Number, default: 0 },
   createdAt: { type: Date, default: Date.now }
