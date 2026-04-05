@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import {
   Container, Grid, Card, CardMedia, CardContent, Typography, CardActions,
-  Button, CircularProgress, Box, TextField, InputAdornment, Paper
+  Button, CircularProgress, Box, TextField, InputAdornment, Paper, IconButton
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuBookIcon from '@mui/icons-material/MenuBook';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import { useNavigate } from 'react-router-dom';
 import API from '../services/api';
 
 export default function HomePage() {
   const [books, setBooks] = useState([]);
+  const [banners, setBanners] = useState([]);
+  const [bannerIndex, setBannerIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
@@ -19,12 +23,45 @@ export default function HomePage() {
       .then(res => setBooks(res.data))
       .catch(() => setBooks([]))
       .finally(() => setLoading(false));
+
+    API.get('/banners')
+      .then(res => setBanners(res.data || []))
+      .catch(() => setBanners([]));
   }, []);
+
+  useEffect(() => {
+    if (banners.length <= 1) return;
+
+    const timer = setInterval(() => {
+      setBannerIndex((prev) => (prev + 1) % banners.length);
+    }, 4000);
+
+    return () => clearInterval(timer);
+  }, [banners]);
 
   const filtered = books.filter(b =>
     b.title?.toLowerCase().includes(search.toLowerCase()) ||
     b.author?.toLowerCase().includes(search.toLowerCase())
   );
+
+  const currentBanner = banners[bannerIndex] || null;
+
+  const handleBannerClick = () => {
+    if (!currentBanner?.link) return;
+    if (currentBanner.link.startsWith('http')) {
+      window.open(currentBanner.link, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    navigate(currentBanner.link);
+  };
+
+  const handlePrevBanner = () => {
+    setBannerIndex((prev) => (prev - 1 + banners.length) % banners.length);
+  };
+
+  const handleNextBanner = () => {
+    setBannerIndex((prev) => (prev + 1) % banners.length);
+  };
 
   return (
     <Box>
@@ -54,6 +91,78 @@ export default function HomePage() {
           />
         </Container>
       </Box>
+
+      {currentBanner && (
+        <Container sx={{ mt: 3 }}>
+          <Paper sx={{ position: 'relative', borderRadius: 2, overflow: 'hidden' }} elevation={3}>
+            <Box
+              onClick={handleBannerClick}
+              sx={{
+                cursor: currentBanner.link ? 'pointer' : 'default',
+                position: 'relative'
+              }}
+            >
+              <Box
+                component="img"
+                src={currentBanner.imageUrl}
+                alt={currentBanner.title}
+                sx={{
+                  width: '100%',
+                  height: { xs: 180, sm: 260, md: 320 },
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
+              />
+              <Box
+                sx={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  p: 2,
+                  color: '#fff',
+                  background: 'linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%)'
+                }}
+              >
+                <Typography variant="h6" fontWeight="bold">{currentBanner.title}</Typography>
+              </Box>
+            </Box>
+
+            {banners.length > 1 && (
+              <>
+                <IconButton
+                  onClick={handlePrevBanner}
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: 8,
+                    transform: 'translateY(-50%)',
+                    bgcolor: 'rgba(0,0,0,0.4)',
+                    color: '#fff',
+                    '&:hover': { bgcolor: 'rgba(0,0,0,0.6)' }
+                  }}
+                >
+                  <ChevronLeftIcon />
+                </IconButton>
+                <IconButton
+                  onClick={handleNextBanner}
+                  sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    right: 8,
+                    transform: 'translateY(-50%)',
+                    bgcolor: 'rgba(0,0,0,0.4)',
+                    color: '#fff',
+                    '&:hover': { bgcolor: 'rgba(0,0,0,0.6)' }
+                  }}
+                >
+                  <ChevronRightIcon />
+                </IconButton>
+              </>
+            )}
+          </Paper>
+        </Container>
+      )}
 
       <Container sx={{ py: 4 }}>
         <Typography variant="h5" fontWeight="bold" gutterBottom>
