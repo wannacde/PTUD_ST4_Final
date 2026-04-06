@@ -34,6 +34,22 @@ exports.applyDiscountCode = async (req, res) => {
   }
 };
 
+exports.updateDiscountCode = async (req, res) => {
+  try {
+    const { code, discount, description } = req.body;
+    const discountCode = await DiscountCode.findByIdAndUpdate(
+      req.params.id,
+      { code, discount, description },
+      { new: true }
+    );
+    if (!discountCode) return res.status(404).json({ message: 'Discount code not found' });
+    res.json(discountCode);
+  } catch (err) {
+    if (err.code === 11000) return res.status(400).json({ message: 'Discount code already exists' });
+    res.status(500).json({ message: err.message });
+  }
+};
+
 exports.deleteDiscountCode = async (req, res) => {
   try {
     const code = await DiscountCode.findByIdAndDelete(req.params.id);
